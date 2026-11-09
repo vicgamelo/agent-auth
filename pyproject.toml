@@ -1,0 +1,70 @@
+[project]
+name = "agent-auth"
+version = "0.1.0"
+description = "OAuth 2.1 authorization for AI agents and MCP servers: a small authorization server, an ASGI guard for MCP servers and APIs, token exchange with actor chains and a tamper-evident audit log."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Victor Gabriel Andrade de Melo", email = "victor.845.melo@gmail.com" }]
+requires-python = ">=3.12"
+keywords = ["mcp", "oauth", "oauth2.1", "agents", "authorization", "token-exchange", "rfc8693", "rfc9728"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Security",
+    "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
+]
+dependencies = [
+    "cryptography>=44",
+    "httpx>=0.28",
+    "pyjwt>=2.10",
+    "python-multipart>=0.0.20",
+    "starlette>=0.48",
+    "uvicorn>=0.34",
+]
+
+[project.optional-dependencies]
+demo = ["mcp>=2.3"]
+
+[project.urls]
+Homepage = "https://github.com/vicgamelo/agent-auth"
+Issues = "https://github.com/vicgamelo/agent-auth/issues"
+
+[project.scripts]
+agent-auth = "agent_auth.__main__:main"
+agent-auth-demo = "agent_auth.demo.run:main"
+
+[build-system]
+requires = ["uv_build>=0.12.19,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "mcp>=2.3",
+    "mypy>=2.4.1",
+    "pytest>=9.2.0",
+    "anyio>=4.9",
+    "ruff>=0.17.4",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF", "ASYNC", "S"]
+ignore = ["RUF001", "RUF002", "RUF003", "S101", "S105", "S106"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S"]
+"src/agent_auth/pages.py" = ["E501"]  # HTML and CSS templates
+
+[tool.mypy]
+strict = true
+packages = ["agent_auth"]
+mypy_path = "src"

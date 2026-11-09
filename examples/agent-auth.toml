@@ -1,0 +1,33 @@
+# agent-auth serve --config examples/agent-auth.toml
+# AGENT_AUTH_DEV_USERS=alice:change-me agent-auth serve --config examples/agent-auth.toml
+
+issuer = "http://127.0.0.1:9400"
+database = "agent-auth.db"
+signing_key_path = "agent-auth-key.pem"
+# trusted_proxies = ["10.0.0.0/8"]   # only behind a reverse proxy you control
+
+[limits]
+access_token_ttl = 300
+dcr_per_ip_per_hour = 10
+dcr_max_clients = 500
+
+[[resources]]
+uri = "http://127.0.0.1:9401/mcp"
+name = "Notes MCP"
+scopes = { "notes:read" = "read your notes", "notes:write" = "add notes" }
+default_scopes = ["notes:read"]
+delegates_to = ["http://127.0.0.1:9402"]
+
+[[resources]]
+uri = "http://127.0.0.1:9402"
+name = "Notes API"
+scopes = { "notes:read" = "read your notes", "notes:write" = "add notes" }
+
+# The MCP server itself: it exchanges user tokens for Notes API tokens.
+# `agent-auth keygen --out notes-mcp.pem` prints the JWK to paste here.
+# [[clients]]
+# client_id = "notes-mcp"
+# name = "Notes MCP"
+# grant_types = ["urn:ietf:params:oauth:grant-type:token-exchange"]
+# serves_resource = "http://127.0.0.1:9401/mcp"
+# jwks = [{ kty = "EC", crv = "P-256", x = "...", y = "...", kid = "..." }]
